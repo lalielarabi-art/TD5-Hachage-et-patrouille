@@ -1,5 +1,6 @@
 #include <iostream>
 #include <unordered_set>
+#include <fstream>
 
 enum class Direction{
     Haut,
@@ -143,19 +144,18 @@ WalkResult mouvement (Input_Structure map){
 
     Direction dir{map.init_dir};
 
-    size_t steps_takens;
+    size_t steps_takens{};
 
     std::unordered_set<Position> visited_positions{};
 
-    while (current_pos.x>=0 && current_pos.x<=map.width && current_pos.y>=0 && current_pos.y<=map.height ){
+    while (current_pos.x>=0 && current_pos.x<map.width && current_pos.y>=0 && current_pos.y<map.height ){
 
         visited_positions.insert(current_pos);
 
         if(map.obstacles.find(current_pos + dir)!= map.obstacles.end()){
-            current_pos += dir;
+           dir= turn_right(dir);
         }
         else{
-            dir= turn_right(dir);
             current_pos += dir;
         }
         
@@ -171,5 +171,13 @@ WalkResult mouvement (Input_Structure map){
 }
 
 
+
 int main(){
+    std::ifstream fichier("/Users/lalie/Documents/Ecole/IMAC/S2/Prog Algo/TD5-Hachage-et-patrouille/src/input_guard_patrol.txt");
+
+    Input_Structure map = read_input(fichier);
+    WalkResult result = mouvement(map);
+
+    std::cout << "Cases visitées : " << result.visited_positions.size() << std::endl;
+
 }
